@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Drake.Core
+namespace Drake.Analyzers
 {
     public class FileActivityAnalyzer : IAnalyzer
     {

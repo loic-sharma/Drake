@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Drake.Core
+namespace Drake.Analyzers
 {
     public struct AnalysisResult
     {
