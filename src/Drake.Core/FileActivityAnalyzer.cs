@@ -10,27 +10,11 @@ namespace Drake.Core
     {
         private const int LengthOfCommitHash = 40;
 
-        private ProcessStartInfo _processStartInfo = new ProcessStartInfo()
+        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(string repositoryPath)
         {
-            UseShellExecute = false,
-            CreateNoWindow = true,
+            var paths = new Dictionary<string, int>();
 
-            // TODO: Don't use hardcoded example
-            WorkingDirectory = "/Users/loshar/Code/KestrelHttpServer",
-
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-
-            FileName = "/usr/bin/git",
-            Arguments = "rev-list --objects --all",
-        };
-
-        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(string path)
-        {
-            var files = new Dictionary<string, int>();
-
-            // TODO: Create ProcessStartInfo that uses "path" parameter
-            using (var process = Process.Start(_processStartInfo))
+            using (var process = Process.Start(CreateProcessStartInfo(repositoryPath)))
             {
                 while (!process.StandardOutput.EndOfStream)
                 {
@@ -41,19 +25,39 @@ namespace Drake.Core
                     if (line.Length <= LengthOfCommitHash + 1) continue;
 
                     // Trim off the hash and the space.
-                    var file = line.Substring(LengthOfCommitHash + 1);
+                    var path = line.Substring(LengthOfCommitHash + 1);
 
-                    files.TryGetValue(file, out var count);
+                    paths.TryGetValue(path, out var count);
 
-                    files[file] = count + 1;
+                    paths[path] = count + 1;
                 }
             }
 
-            return files.Select(f => new AnalysisResult
-                                {
-                                    Path = f.Key,
-                                    Weight = f.Value,
-                                });
+            return paths.Select(f =>
+            {
+                return new AnalysisResult
+                {
+                    Path = f.Key,
+                    Weight = f.Value,
+                };
+            });
+        }
+
+        private ProcessStartInfo CreateProcessStartInfo(string path)
+        {
+            return new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+
+                WorkingDirectory = path,
+
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+
+                FileName = "/usr/bin/git",
+                Arguments = "rev-list --objects --all",
+            };
         }
     }
 }
