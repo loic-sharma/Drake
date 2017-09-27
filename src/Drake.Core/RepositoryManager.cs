@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Drake.Indexer
+namespace Drake.Core
 {
     public class RepositoryManager
     {
@@ -17,13 +17,13 @@ namespace Drake.Indexer
             _repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
         }
 
-        public Task<bool> Download(string repositoryUri)
+        public Task<string> Download(string repositoryUri)
         {
             return Download(new Uri(repositoryUri));
         }
 
         // This "clones" or "pulls" as necessary.
-        public Task<bool> Download(Uri repositoryUri)
+        public async Task<string> Download(Uri repositoryUri)
         {
             if (repositoryUri == null) throw new ArgumentNullException(nameof(repositoryUri));
 
@@ -47,14 +47,16 @@ namespace Drake.Indexer
             {
                 Console.WriteLine("Pulling");
 
-                return ExecuteProcess(CreatePullProcessInfo(repositoryPath));
+                await ExecuteProcess(CreatePullProcessInfo(repositoryPath));
             }
             else
             {
                 Console.WriteLine("Cloning");
 
-                return ExecuteProcess(CreateCloneProcessInfo(repositoryUri));
+                await ExecuteProcess(CreateCloneProcessInfo(repositoryUri));
             }
+
+            return repositoryPath;
         }
 
         private bool TryParseRepositoryName(Uri repositoryUri, out string repositoryName)

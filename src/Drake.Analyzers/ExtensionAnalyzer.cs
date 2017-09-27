@@ -10,7 +10,7 @@ namespace Drake.Analyzers
         private IAnalyzer _previous;
         private HashSet<string> _extensionWhiteList;
 
-        // TODO: Config files are nice.
+        // TODO: Config files are nice. Maybe use a blocklist instead?
         private static readonly string[] DefaultExtensionWhiteList =
         {
             ".cmd",
