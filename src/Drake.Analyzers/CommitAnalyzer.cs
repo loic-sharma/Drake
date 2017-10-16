@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,7 +34,8 @@ namespace Drake.Analyzers
                 }
             }
 
-            return paths;
+            return paths.Where(p => File.Exists(Path.Combine(repositoryPath, p.Key)))
+                        .ToDictionary(p => p.Key, p => p.Value);
         }
 
         private ProcessStartInfo CreateProcessStartInfo(string path)

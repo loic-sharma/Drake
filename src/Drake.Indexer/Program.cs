@@ -19,6 +19,10 @@ namespace Drake.Indexer
         {
             var repositoryUri = args[0];
 
+            // TODO: Accept repositoryStore from args
+            var repositoryStore = "/Users/loshar/Code/Drake/store";
+            var repositoryManager = new RepositoryManager(repositoryStore);
+
             using (var db = new DrakeContext())
             {
                 var repository = db
@@ -31,36 +35,20 @@ namespace Drake.Indexer
                 {
                     Console.WriteLine($"First time seeing repository {repositoryUri}, downloading...");
 
-                    // TODO: Accept repositoryStore from args
-                    var repositoryStore = "/Users/loshar/Code/Drake/store";
-                    var repositoryManager = new RepositoryManager(repositoryStore);
-
                     var repositoryPath = await repositoryManager.Download(repositoryUri);
 
                     Console.WriteLine("Analyzing...");
 
-                    var repositoryEntity = new Repository
+                    repository = new Repository
                     {
                         RepositoryUri = repositoryUri,
                         LastPullTime = DateTimeOffset.Now,
                         Files = new List<File>()
                     };
 
-                    var analyzer = new CommitAnalyzer();
+                    db.Repositories.Add(repository);
 
-                    foreach (var result in await analyzer.CountCommitsAsync(repositoryPath))
-                    {
-                        repositoryEntity.Files.Add(new File
-                        {
-                            Path = result.Key,
-                            Commits = result.Value,
-                        });
-
-                        Console.WriteLine($"{result.Key}: {result.Value}");
-                    }
-
-                    db.Repositories.Add(repositoryEntity);
-
+                    await AnalyzeFiles(repository, repositoryPath);
                     await db.SaveChangesAsync();
                 }
                 else
@@ -71,7 +59,34 @@ namespace Drake.Indexer
                     {
                         Console.WriteLine($"{file.Path}: {file.Commits}");
                     }
+
+                    Console.WriteLine("Updating local repository copy...");
+
+                    var repositoryPath = await repositoryManager.Download(repositoryUri);
+
+                    Console.WriteLine("Analyzing...");
+
+                    db.Files.RemoveRange(repository.Files);
+
+                    await AnalyzeFiles(repository, repositoryPath);
+                    await db.SaveChangesAsync();
                 }
+            }
+        }
+
+        private static async Task AnalyzeFiles(Repository repository, string repositoryPath)
+        {
+            var analyzer = new CommitAnalyzer();
+
+            foreach (var result in await analyzer.CountCommitsAsync(repositoryPath))
+            {
+                repository.Files.Add(new File
+                {
+                    Path = result.Key,
+                    Commits = result.Value,
+                });
+
+                Console.WriteLine($"{result.Key}: {result.Value}");
             }
         }
     }
