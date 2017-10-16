@@ -24,11 +24,11 @@ namespace Drake.Core.Migrations
                     b.Property<int>("FileId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("Commits");
+
                     b.Property<string>("Path");
 
                     b.Property<int>("RepositoryId");
-
-                    b.Property<float>("Score");
 
                     b.HasKey("FileId");
 

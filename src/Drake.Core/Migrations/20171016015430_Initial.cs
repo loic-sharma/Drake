@@ -28,9 +28,9 @@ namespace Drake.Core.Migrations
                 {
                     FileId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Commits = table.Column<int>(type: "INTEGER", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: true),
-                    RepositoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Score = table.Column<float>(type: "REAL", nullable: false)
+                    RepositoryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

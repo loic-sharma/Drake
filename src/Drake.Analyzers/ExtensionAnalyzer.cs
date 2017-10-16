@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Drake.Analyzers
 {
-    public class ExtensionAnalyzer : IAnalyzer
+    public class ExtensionAnalyzer
     {
-        private IAnalyzer _previous;
         private HashSet<string> _extensionWhiteList;
 
-        // TODO: Config files are nice. Maybe use a blocklist instead?
+        // TODO: Config files are nice
+        // TODO: Maybe use a blacklist instead?
         private static readonly string[] DefaultExtensionWhiteList =
         {
             ".cmd",
@@ -21,28 +21,16 @@ namespace Drake.Analyzers
             ".sh",
         };
 
-        public ExtensionAnalyzer(
-            IAnalyzer previous,
-            IEnumerable<string> extensionWhitelist = null)
+        public ExtensionAnalyzer(IEnumerable<string> extensionWhitelist = null)
         {
-            _previous = previous ?? throw new ArgumentNullException(nameof(previous));
             _extensionWhiteList = new HashSet<string>(extensionWhitelist ?? DefaultExtensionWhiteList);
         }
 
-        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(string path)
+        public int Analyze(string path)
         {
-            // Reset the weight of all results whose file's extension are not whitelisted.
-            return (await _previous.AnalyzeAsync(path)).Select(result =>
-            {
-                var extension = ParseExtensionFromPath(result.Path);
+            var extension = ParseExtensionFromPath(path);
 
-                if (!_extensionWhiteList.Contains(extension))
-                {
-                    result.Weight = 0;
-                }
-
-                return result;
-            });
+            return _extensionWhiteList.Contains(extension) ? 1 : 0;
         }
 
         private string ParseExtensionFromPath(string path)

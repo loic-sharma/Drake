@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Drake.Analyzers
 {
-    public class FileActivityAnalyzer : IAnalyzer
+    public class CommitAnalyzer
     {
         private const int LengthOfCommitHash = 40;
 
-        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(string repositoryPath)
+        public async Task<Dictionary<string, int>> CountCommitsAsync(string repositoryPath)
         {
             var paths = new Dictionary<string, int>();
 
@@ -33,14 +33,7 @@ namespace Drake.Analyzers
                 }
             }
 
-            return paths.Select(f =>
-            {
-                return new AnalysisResult
-                {
-                    Path = f.Key,
-                    Weight = f.Value,
-                };
-            });
+            return paths;
         }
 
         private ProcessStartInfo CreateProcessStartInfo(string path)

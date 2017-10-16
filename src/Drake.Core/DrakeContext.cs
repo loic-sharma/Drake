@@ -28,7 +28,7 @@ namespace Drake.Core
     {
         public int FileId { get; set; }
         public string Path { get; set; }
-        public float Score { get; set; }
+        public int Commits { get; set; }
 
         public int RepositoryId { get; set; }
         public Repository Repository { get; set; }

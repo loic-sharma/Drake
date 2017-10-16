@@ -11,7 +11,7 @@ using System;
 namespace Drake.Core.Migrations
 {
     [DbContext(typeof(DrakeContext))]
-    [Migration("20170927055607_Initial")]
+    [Migration("20171016015430_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,11 @@ namespace Drake.Core.Migrations
                     b.Property<int>("FileId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("Commits");
+
                     b.Property<string>("Path");
 
                     b.Property<int>("RepositoryId");
-
-                    b.Property<float>("Score");
 
                     b.HasKey("FileId");
 

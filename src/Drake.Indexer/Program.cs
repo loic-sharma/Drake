@@ -17,44 +17,46 @@ namespace Drake.Indexer
 
         static async Task MainAsync(string[] args)
         {
+            var repositoryUri = args[0];
+
             using (var db = new DrakeContext())
             {
                 var repository = db
                     .Repositories
-                    .Where(r => r.RepositoryUri == args[0])
+                    .Where(r => r.RepositoryUri == repositoryUri)
                     .Include(r => r.Files)
                     .FirstOrDefault();
 
                 if (repository == null)
                 {
-                    Console.WriteLine($"First time seeing repository {args[0]}, downloading...");
+                    Console.WriteLine($"First time seeing repository {repositoryUri}, downloading...");
 
                     // TODO: Accept repositoryStore from args
                     var repositoryStore = "/Users/loshar/Code/Drake/store";
                     var repositoryManager = new RepositoryManager(repositoryStore);
 
-                    var repositoryPath = await repositoryManager.Download(args[0]);
+                    var repositoryPath = await repositoryManager.Download(repositoryUri);
 
                     Console.WriteLine("Analyzing...");
 
                     var repositoryEntity = new Repository
                     {
-                        RepositoryUri = args[0],
+                        RepositoryUri = repositoryUri,
                         LastPullTime = DateTimeOffset.Now,
                         Files = new List<File>()
                     };
 
-                    var analyzer = new ExtensionAnalyzer(new FileActivityAnalyzer());
+                    var analyzer = new CommitAnalyzer();
 
-                    foreach (var result in await analyzer.AnalyzeAsync(repositoryPath))
+                    foreach (var result in await analyzer.CountCommitsAsync(repositoryPath))
                     {
                         repositoryEntity.Files.Add(new File
                         {
-                            Path = result.Path,
-                            Score = result.Weight,
+                            Path = result.Key,
+                            Commits = result.Value,
                         });
 
-                        Console.WriteLine($"{result.Path}: {result.Weight}");
+                        Console.WriteLine($"{result.Key}: {result.Value}");
                     }
 
                     db.Repositories.Add(repositoryEntity);
@@ -63,11 +65,11 @@ namespace Drake.Indexer
                 }
                 else
                 {
-                    Console.WriteLine($"Already seen repository {args[0]}");
+                    Console.WriteLine($"Already seen repository {repositoryUri}");
 
-                    foreach (var file in repository.Files.OrderByDescending(f => f.Score))
+                    foreach (var file in repository.Files.OrderByDescending(f => f.Commits))
                     {
-                        Console.WriteLine($"{file.Path}: {file.Score}");
+                        Console.WriteLine($"{file.Path}: {file.Commits}");
                     }
                 }
             }
