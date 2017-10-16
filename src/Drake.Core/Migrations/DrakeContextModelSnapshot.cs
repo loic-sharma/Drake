@@ -42,7 +42,7 @@ namespace Drake.Core.Migrations
                     b.Property<int>("RepositoryId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("LastPullTime");
+                    b.Property<DateTimeOffset>("LastUpdate");
 
                     b.Property<string>("RepositoryUri");
 

@@ -11,7 +11,7 @@ using System;
 namespace Drake.Core.Migrations
 {
     [DbContext(typeof(DrakeContext))]
-    [Migration("20171016015430_Initial")]
+    [Migration("20171016041403_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace Drake.Core.Migrations
                     b.Property<int>("RepositoryId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("LastPullTime");
+                    b.Property<DateTimeOffset>("LastUpdate");
 
                     b.Property<string>("RepositoryUri");
 

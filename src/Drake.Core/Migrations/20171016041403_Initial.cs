@@ -14,7 +14,7 @@ namespace Drake.Core.Migrations
                 {
                     RepositoryId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LastPullTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
+                    LastUpdate = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     RepositoryUri = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>

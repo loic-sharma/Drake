@@ -42,7 +42,7 @@ namespace Drake.Indexer
                     repository = new Repository
                     {
                         RepositoryUri = repositoryUri,
-                        LastPullTime = DateTimeOffset.Now,
+                        LastUpdate = DateTimeOffset.Now,
                         Files = new List<File>()
                     };
 
@@ -65,6 +65,8 @@ namespace Drake.Indexer
                     var repositoryPath = await repositoryManager.Download(repositoryUri);
 
                     Console.WriteLine("Analyzing...");
+
+                    repository.LastUpdate = DateTimeOffset.Now;
 
                     db.Files.RemoveRange(repository.Files);
 

@@ -19,7 +19,7 @@ namespace Drake.Core
     {
         public int RepositoryId { get; set; }
         public string RepositoryUri { get; set; }
-        public DateTimeOffset LastPullTime { get; set; }
+        public DateTimeOffset LastUpdate { get; set; }
 
         public List<File> Files { get; set; }
     }

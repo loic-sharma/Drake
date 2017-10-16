@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Drake.Core;
@@ -11,8 +10,6 @@ namespace Drake.Api.Controllers
     [Route("api/[controller]")]
     public class RepositoryController : Controller
     {
-		private static readonly Uri GitHubUri = new Uri("https://github.com/");
-
         private DrakeContext _db;
 
         public RepositoryController(DrakeContext db)
@@ -20,21 +17,21 @@ namespace Drake.Api.Controllers
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        // GET api/repository/{owner}/{repository}
-        [HttpGet("{owner}/{repository}")]
+		// GET api/repository/{owner}/{repositoryName}
+		[HttpGet("{owner}/{repositoryName}")]
         public async Task<object> Get(string owner, string repositoryName)
         {
-            var uri = new Uri(GitHubUri, $"{owner}/{repositoryName}.git").ToString();
+            var uri = $"https://github.com/{owner}/{repositoryName}.git";
             var repository = await _db.Repositories
                                       .Where(r => r.RepositoryUri == uri)
-                                      .Include(r => r.Files)
+									  .Include(r => r.Files)
                                       .FirstAsync();
 
             return new
             {
 				repository.RepositoryId,
                 repository.RepositoryUri,
-                repository.LastPullTime,
+                repository.LastUpdate,
                 Files = repository.Files.Select(f => new
                 {
                     f.FileId,
