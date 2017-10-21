@@ -27,7 +27,7 @@ namespace Drake.Indexer
             {
                 var repository = db
                     .Repositories
-                    .Where(r => r.RepositoryUri == repositoryUri)
+                    .Where(r => r.Uri == repositoryUri)
                     .Include(r => r.Files)
                     .FirstOrDefault();
 
@@ -41,7 +41,7 @@ namespace Drake.Indexer
 
                     repository = new Repository
                     {
-                        RepositoryUri = repositoryUri,
+                        Uri = repositoryUri,
                         LastUpdate = DateTimeOffset.Now,
                         Files = new List<File>()
                     };

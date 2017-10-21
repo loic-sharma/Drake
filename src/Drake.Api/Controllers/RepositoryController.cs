@@ -23,14 +23,14 @@ namespace Drake.Api.Controllers
         {
             var uri = $"https://github.com/{owner}/{repositoryName}.git";
             var repository = await _db.Repositories
-                                      .Where(r => r.RepositoryUri == uri)
-									  .Include(r => r.Files)
+                                      .Where(r => r.Uri == uri)
+                                      .Include(r => r.Files)
                                       .FirstAsync();
 
             return new
             {
-				repository.RepositoryId,
-                repository.RepositoryUri,
+                repository.RepositoryId,
+                repository.Uri,
                 repository.LastUpdate,
                 Files = repository.Files.Select(f => new
                 {

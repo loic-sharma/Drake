@@ -44,7 +44,7 @@ namespace Drake.Core.Migrations
 
                     b.Property<DateTimeOffset>("LastUpdate");
 
-                    b.Property<string>("RepositoryUri");
+                    b.Property<string>("Uri");
 
                     b.HasKey("RepositoryId");
 
