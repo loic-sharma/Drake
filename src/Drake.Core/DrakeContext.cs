@@ -9,10 +9,9 @@ namespace Drake.Core
         public DbSet<Repository> Repositories { get; set; }
         public DbSet<File> Files { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {
-            builder.UseSqlite("Data Source=drake.db"); // TODO: Config
-        }
+        public DrakeContext(DbContextOptions<DrakeContext> options)
+            : base(options)
+        { }
     }
 
     public class Repository

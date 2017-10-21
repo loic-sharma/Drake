@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Drake.Analyzers
+namespace Drake.Indexing
 {
     public class CommitAnalyzer
     {

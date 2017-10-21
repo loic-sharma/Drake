@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Drake.Analyzers\Drake.Analyzers.csproj" />
     <ProjectReference Include="..\Drake.Core\Drake.Core.csproj" />
+    <ProjectReference Include="..\Drake.Indexing\Drake.Indexing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
