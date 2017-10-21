@@ -35,7 +35,13 @@ namespace Drake.Core
                     nameof(repositoryUri));
             }
 
-            var repositoryName = repositoryUri.RepositoryName();
+            if (!repositoryUri.TryParseRepositoryName(out var repositoryName))
+            {
+                throw new ArgumentException(
+                    $"Malformed git URI. Failed to parse repository name",
+                    nameof(repositoryUri));
+            }
+
             var repositoryPath = Path.Combine(_repositoryStore, repositoryName);
 
             Console.WriteLine(repositoryPath);
@@ -54,27 +60,6 @@ namespace Drake.Core
             }
 
             return repositoryPath;
-        }
-
-        private bool TryParseRepositoryName(Uri repositoryUri, out string repositoryName)
-        {
-            var repositorySegment = repositoryUri.Segments.LastOrDefault();
-
-            if (repositorySegment.Length > GitExtension.Length)
-            {
-                var extension = repositorySegment.Substring(repositorySegment.Length - GitExtension.Length);
-
-                if (extension == GitExtension)
-                {
-                    repositoryName = repositorySegment.Substring(0, repositorySegment.Length - GitExtension.Length);
-
-                    return true;
-                }
-            }
-
-            repositoryName = null;
-
-            return false;
         }
 
         private ProcessStartInfo CreatePullProcessInfo(string path)

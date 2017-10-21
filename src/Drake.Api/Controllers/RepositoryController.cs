@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Drake.Core;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Drake.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("r")]
     public class RepositoryController : Controller
     {
         private DrakeContext _db;
@@ -20,15 +21,14 @@ namespace Drake.Api.Controllers
             _indexer = indexer ?? throw new ArgumentNullException(nameof(indexer));
         }
 
-        [HttpGet("list")]
-        public async Task<object> List()
+        [HttpGet]
+        public async Task<IEnumerable<string>> List()
         {
             return await _db.Repositories
                             .Select(r => r.Name)
                             .ToListAsync();
         }
 
-        // GET api/repository/{owner}/{repositoryName}
         [HttpGet("{owner}/{repositoryName}")]
         public async Task<object> Get(string owner, string repositoryName)
         {

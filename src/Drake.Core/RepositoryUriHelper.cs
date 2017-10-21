@@ -8,14 +8,37 @@ namespace Drake.Core
 
         public static string RepositoryName(this Uri repositoryUri)
         {
-            var name = repositoryUri.AbsolutePath;
+            return repositoryUri.TryParseRepositoryName(out var repositoryName)
+                    ? repositoryName
+                    : null;
+        }
 
-            if (name.EndsWith(GitExtension))
+        public static bool TryParseRepositoryName(this Uri repositoryUri, out string repositoryName)
+        {
+            try
             {
-                name = name.Substring(0, name.Length - GitExtension.Length);
+                var repositorySegment = repositoryUri.AbsolutePath;
+
+                if (repositorySegment.Length > GitExtension.Length)
+                {
+                    var extension = repositorySegment.Substring(repositorySegment.Length - GitExtension.Length);
+
+                    if (extension == GitExtension)
+                    {
+                        repositoryName = repositorySegment.Substring(0, repositorySegment.Length - GitExtension.Length);
+
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                // TODO: Logging errors is nice.
             }
 
-            return name.Trim('/');
+            repositoryName = null;
+
+            return false;
         }
     }
 }
