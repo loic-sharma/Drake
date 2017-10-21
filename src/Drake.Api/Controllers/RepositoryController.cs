@@ -17,8 +17,16 @@ namespace Drake.Api.Controllers
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-		// GET api/repository/{owner}/{repositoryName}
-		[HttpGet("{owner}/{repositoryName}")]
+        [HttpGet("list")]
+        public async Task<object> List()
+        {
+            return await _db.Repositories
+                            .Select(r => r.Name)
+                            .ToListAsync();
+        }
+
+        // GET api/repository/{owner}/{repositoryName}
+        [HttpGet("{owner}/{repositoryName}")]
         public async Task<object> Get(string owner, string repositoryName)
         {
             var uri = $"https://github.com/{owner}/{repositoryName}.git";

@@ -32,7 +32,7 @@ namespace Drake.Core
                     name = name.Substring(0, name.Length - ".git".Length);
                 }
 
-                return name;
+                return name.Trim('/');
             }
         }
 
