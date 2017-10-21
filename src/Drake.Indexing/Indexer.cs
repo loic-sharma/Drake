@@ -9,8 +9,8 @@ namespace Drake.Indexing
 {
     public class Indexer
     {
-        public DrakeContext _db;
-        public RepositoryManager _repositoryManager;
+        private readonly DrakeContext _db;
+        private readonly RepositoryManager _repositoryManager;
 
         // TODO: Add logger
         public Indexer(DrakeContext db, RepositoryManager manager)
@@ -19,7 +19,7 @@ namespace Drake.Indexing
             _repositoryManager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
-        public async Task Index(string repositoryUri)
+        public async Task<Repository> Index(string repositoryUri)
         {
             var repository = await _db
                 .Repositories
@@ -29,15 +29,15 @@ namespace Drake.Indexing
 
             if (repository == null)
             {
-                await DownloadAndAnalyze(repositoryUri);
+                return await DownloadAndAnalyze(repositoryUri);
             }
             else
             {
-                await Update(repository);
+                return await Update(repository);
             }
         }
 
-        private async Task DownloadAndAnalyze(string repositoryUri)
+        private async Task<Repository> DownloadAndAnalyze(string repositoryUri)
         {
             // TODO: Use logger instead of Console
             Console.WriteLine($"First time seeing repository {repositoryUri}, downloading...");
@@ -57,9 +57,11 @@ namespace Drake.Indexing
 
             await AnalyzeFiles(repository, repositoryPath);
             await _db.SaveChangesAsync();
+
+            return repository;
         }
 
-        private async Task Update(Repository repository)
+        private async Task<Repository> Update(Repository repository)
         {
             Console.WriteLine($"Already seen repository {repository.Uri}");
 
@@ -80,6 +82,8 @@ namespace Drake.Indexing
 
             await AnalyzeFiles(repository, repositoryPath);
             await _db.SaveChangesAsync();
+
+            return repository;
         }
 
         private async Task AnalyzeFiles(Repository repository, string repositoryPath)

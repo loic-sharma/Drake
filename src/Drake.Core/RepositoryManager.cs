@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Drake.Core
 {
+    // TODO: This class is not thread-safe!
     public class RepositoryManager
     {
         private string _repositoryStore;
