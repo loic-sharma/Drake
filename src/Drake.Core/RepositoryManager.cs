@@ -35,11 +35,7 @@ namespace Drake.Core
                     nameof(repositoryUri));
             }
 
-            if (!TryParseRepositoryName(repositoryUri, out var repositoryName))
-            {
-                throw new ArgumentException("Malformed git URI", nameof(repositoryUri));
-            }
-
+            var repositoryName = repositoryUri.RepositoryName();
             var repositoryPath = Path.Combine(_repositoryStore, repositoryName);
 
             Console.WriteLine(repositoryPath);
@@ -54,7 +50,7 @@ namespace Drake.Core
             {
                 Console.WriteLine("Cloning");
 
-                await ExecuteProcess(CreateCloneProcessInfo(repositoryUri));
+                await ExecuteProcess(CreateCloneProcessInfo(repositoryUri, repositoryName));
             }
 
             return repositoryPath;
@@ -98,7 +94,7 @@ namespace Drake.Core
             };
         }
 
-        private ProcessStartInfo CreateCloneProcessInfo(Uri repositoryUri)
+        private ProcessStartInfo CreateCloneProcessInfo(Uri repositoryUri, string repositoryName)
         {
             return new ProcessStartInfo
             {
@@ -111,7 +107,7 @@ namespace Drake.Core
                 RedirectStandardOutput = true,
 
                 FileName = "/usr/bin/git",
-                Arguments = $"clone {repositoryUri}",
+                Arguments = $"clone {repositoryUri} {repositoryName}",
             };
         }
 
