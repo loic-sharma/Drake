@@ -10,8 +10,9 @@ namespace Drake.Core
     // TODO: This class is not thread-safe!
     public class RepositoryManager
     {
-        private string _repositoryStore;
         private const string GitExtension = ".git";
+
+        private readonly string _repositoryStore;
 
         public RepositoryManager(string repositoryStore)
         {
@@ -60,6 +61,14 @@ namespace Drake.Core
             }
 
             return repositoryPath;
+        }
+
+        public string ReadAllText(string path)
+        {
+            path = Path.Combine(_repositoryStore, path);
+
+            // TODO: Comment, throws FileNotFoundException
+            return System.IO.File.ReadAllText(path);
         }
 
         private ProcessStartInfo CreatePullProcessInfo(string path)

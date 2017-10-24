@@ -25,7 +25,8 @@ namespace Drake.Core
 
                     if (extension == GitExtension)
                     {
-                        repositoryName = repositorySegment.Substring(0, repositorySegment.Length - GitExtension.Length);
+                        repositoryName = repositorySegment.Substring(0, repositorySegment.Length - GitExtension.Length)
+                                                          .Trim('/');
 
                         return true;
                     }

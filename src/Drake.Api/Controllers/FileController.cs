@@ -11,10 +11,27 @@ namespace Drake.Api.Controllers
     [Route("f")]
     public class FileController : Controller
     {
-        [HttpGet("{owner}/{repositoryName}/{*path}")]
-        public async Task<object> Get(string owner, string repositoryName, string path)
+        private readonly RepositoryManager _repositoryManager;
+
+        public FileController(RepositoryManager repositoryManager)
         {
-            return $"{owner}/{repositoryName}/{path}";
+            _repositoryManager = repositoryManager ?? throw new ArgumentNullException(nameof(repositoryManager));
+        }
+
+        [HttpGet("{owner}/{repositoryName}/{*path}")]
+        public string Get(string owner, string repositoryName, string path)
+        {
+            var filePath = $"{owner}/{repositoryName}/{path}";
+
+            try
+            {
+                return _repositoryManager.ReadAllText(filePath);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                // TODO: Log/404
+                throw;
+            }
         }
     }
 }
