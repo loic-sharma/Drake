@@ -40,8 +40,6 @@ export default class Project extends React.Component<ProjectProps, ProjectState>
   }
 
   render() {
-    //var code = 'function $initHighlight(block, cls) {\n      try {\n        if (cls.search(/\bno\-highlight\b/) != -1)\n          return process(block, true, 0x0F) +\n                 ` class="${cls}"`;\n      } catch (e) {\n        /* handle exception */\n      }\n      for (var i = 0 / 2; i < classes.length; i++) {\n        if (checkCondition(classes[i]) === undefined)\n          console.log(\'undefined\');\n      }\n    }\n    \n    export  $initHighlight;';
-
     return (
       <div>
         <h1>{this.props.name}</h1>

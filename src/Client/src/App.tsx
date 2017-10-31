@@ -19,11 +19,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   public componentDidMount(): void {
-    fetch('/r/').then(response => {
-      return response.json();
-    }).then(data => {
-      this.setState({ items: data, selected: this.state.selected });
-    });
+    this.loadItems();
   }
 
   public handleSelect(value: string): void {
@@ -31,6 +27,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   public handleUnselect(): void {
+    this.loadItems();
     this.setState({items: this.state.items, selected: undefined});
   }
 
@@ -51,6 +48,14 @@ class App extends React.Component<{}, AppState> {
         </div>
       );
     }
+  }
+
+  private loadItems(): void {
+    fetch('/r/').then(response => {
+      return response.json();
+    }).then(data => {
+      this.setState({ items: data, selected: this.state.selected });
+    });
   }
 }
 

@@ -31,6 +31,14 @@ export default class Search extends React.Component<SearchProps, SearchState> {
     this.setState({ input: value, filteredItems: items });
   }
 
+  public handleKeyDown(keyCode: number) {
+    // On enter, "force" select the input. A quick sanity check is done
+    // to verify this looks like a GitHub repository.
+    if (keyCode === '\r'.charCodeAt(0) && this.state.input.indexOf('/') > 0) {
+      this.props.onSelect(this.state.input);
+    }
+  }
+
   render() {
     return (
       <div className="Search">
@@ -38,6 +46,7 @@ export default class Search extends React.Component<SearchProps, SearchState> {
           type="text"
           placeholder="Search"
           onChange={e => this.handleSearch(e.target.value)}
+          onKeyDown={e => this.handleKeyDown(e.keyCode)}
         />
 
         <p>{this.state.filteredItems.length} results:</p>

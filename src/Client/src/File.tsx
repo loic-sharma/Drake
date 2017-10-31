@@ -23,10 +23,10 @@ export default class File extends React.Component<FileProps, FileState> {
 
   componentDidMount() {
     fetch('/f/' + this.props.projectName + '/' + this.props.path).then(response => {
-      return response.text()
+      return response.text();
     }).then(data => {
       this.setState({content: data});
-    })
+    });
   }
 
   componentDidUpdate() {
