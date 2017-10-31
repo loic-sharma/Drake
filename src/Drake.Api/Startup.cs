@@ -52,6 +52,7 @@ namespace Drake.Api
             }
 
             app.UseMvc();
+            app.UseStaticFiles();
         }
     }
 }
